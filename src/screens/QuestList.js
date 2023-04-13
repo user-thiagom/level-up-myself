@@ -11,8 +11,7 @@ const initialQuests= [
         desc: "A prática cotidiana prova que o início da atividade geral de formação de atitudes garante a contribuição de um grupo importante na determinação da gestão inovadora da qual fazemos parte.",
         xp: 16,
         doneAt: null,
-        estimateAt: new Date(2023,3,7,12,30,0),
-        status:'Ativa'
+        estimateAt: new Date(2023,3,15,12,30,0),
     },
     {
         id: 2,
@@ -20,8 +19,7 @@ const initialQuests= [
         desc: "O cuidado em identificar pontos críticos na hegemonia do ambiente político estende o alcance e a importância do retorno esperado a longo prazo.",
         xp: 20,
         doneAt: null,
-        estimateAt: new Date(),
-        status:'Expirada'
+        estimateAt: new Date(2023,3,12,21,30,0),
     },
     {
         id: 3,
@@ -30,7 +28,6 @@ const initialQuests= [
         xp: 20,
         doneAt: null,
         estimateAt: new Date(),
-        status:'Concluida'
     }
 ]
 
@@ -38,13 +35,21 @@ const QuestList = () => {
     const userName = 'Thiago'
 
     const [quests, setQuests] = useState(initialQuests)
+    const [tickDate,setTickDate] = useState(new Date())
 
     useEffect(()=>{
+        ticker()
         loadQuests()
     },[])
 
     function loadQuests() {
         
+    }
+
+    function ticker() {
+        setInterval(()=>{
+            setTickDate(new Date())
+        },60000)
     }
 
     return (
@@ -60,7 +65,7 @@ const QuestList = () => {
             </View>
             <View style={styles.questsContainer}>
                 <FlatList data={quests} keyExtactor={item=>`${item.id}`} 
-                    renderItem={({item})=> <Quest toggleQuest={(id)=>{console.warn(`Id: ${id}`)}} showModal={()=>console.warn('Modal!')} {...item}/>}
+                    renderItem={({item})=> <Quest tick={tickDate} toggleQuest={(id)=>{console.warn(`Id: ${id}`)}} showModal={()=>console.warn('Modal!')} {...item}/>}
                 />
             </View>
         </View>
