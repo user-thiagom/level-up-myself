@@ -8,7 +8,7 @@ import { TouchableWithoutFeedback } from 'react-native';
 const Quest = ({ id, title, desc, xp, doneAt, estimateAt, tick, showModal, toggleQuest }) => {
 
     const date = doneAt ? doneAt : estimateAt
-    const [formatedDate,setFormatedDate] = useState(moment(date).fromNow())
+    const [formatedDate, setFormatedDate] = useState(moment(date).fromNow())
     const [color, setColor] = useState('')
     const [statuss, setStatuss] = useState('')
 
@@ -16,22 +16,22 @@ const Quest = ({ id, title, desc, xp, doneAt, estimateAt, tick, showModal, toggl
         handleStatus()
     }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         setFormatedDate(moment(date).fromNow())
         handleStatus()
-    },[tick])
+    }, [tick])
 
-    useEffect(()=>{
+    useEffect(() => {
         colorStatus()
-    },[statuss])
+    }, [statuss])
 
     function handleQuest() {
         if (!doneAt) {
-            return <View style={styles.checkBox}></View>
+            return <View style={statuss === 'Expirada' ? styles.checkBoxDisable : styles.checkBox}></View>
         } else {
             return (
                 <View style={styles.checkBox}>
-                    <Feather name="check" size={48} color="black" />
+                    <Feather name="check" size={40} color="black" />
                 </View>
             )
         }
@@ -68,17 +68,22 @@ const Quest = ({ id, title, desc, xp, doneAt, estimateAt, tick, showModal, toggl
     }
 
     return (
-        <TouchableOpacity onPress={showModal}>
+        <TouchableOpacity onPress={()=>{showModal(id)}}>
             <View style={styles.container}>
                 <View style={styles.questInfo}>
                     <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.expireIn}>{moment() > moment(estimateAt) ? 'Expirou' : 'Expira'} {formatedDate}</Text>
+
+                    {doneAt ?
+                        <Text style={styles.expireIn}>Concluída {formatedDate}</Text> :
+                        <Text style={styles.expireIn}>{moment() > moment(estimateAt) ? 'Expirou' : 'Expira'} {formatedDate}</Text>
+                    }
+
                     <View style={styles.questStatusContainer}>
                         <View style={[styles.questStatusCircle, { backgroundColor: color }]}></View>
                         <Text style={styles.questStatus}>{statuss}</Text>
                     </View>
                 </View>
-                <TouchableWithoutFeedback onPress={() => toggleQuest(id)}>
+                <TouchableWithoutFeedback disabled={statuss === 'Expirada' ? true : false} onPress={() => toggleQuest(id)}>
                     <View style={styles.checkContainer}>
                         {handleQuest()}
                     </View>
@@ -122,6 +127,13 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    checkBoxDisable: {
+        width: 40,
+        height: 40,
+        backgroundColor: 'gray',
         justifyContent: 'center',
         alignItems: 'center',
     },
